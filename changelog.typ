@@ -4,6 +4,13 @@
 #set enum(indent: 0em)
 #set list(indent: 0em)
 
+#heading(level: 2, numbering: none, "2023-04-18")
++ 参考北航博士论文模板，完成对北航格式的适配
++ 增加了对字符串分散对齐(strjustify)的功能与相应格式适配
++ TODO
+  - 摘要现在是字符串形式，改为content形式更好
+
+
 #heading(level: 2, numbering: none, "2023-04-16")
 
 + 增加了编译所需的字体文件（#contributors.TeddyHuang-00）

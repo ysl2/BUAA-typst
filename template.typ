@@ -202,18 +202,24 @@
           })
         }
 
-        if el.level == 1 {
-          textbf(el.body)
+        if el.level == 1 { // 适配分散对齐标题
+          if el.body.has("children"){
+            let body=el.body.children.filter(x => not x.has("amount")).join()
+            textbf(body)
+          }else{
+            textbf(el.body)
+          }
+          
         } else {
           el.body
         }
 
-        // Filler dots
-        if el.level == 1 {
-          box(width: 1fr, h(10pt) + box(width: 1fr) + h(10pt))
-        } else {
-          box(width: 1fr, h(10pt) + box(width: 1fr, repeat[.]) + h(10pt))
-        }
+        // Filler dots  // 北航模板不需要
+        // if el.level == 1 {
+        //   box(width: 1fr, h(10pt) + box(width: 1fr) + h(10pt))
+        // } else {
+        box(width: 1fr, h(10pt) + box(width: 1fr, repeat[.]) + h(10pt))
+        // }
 
         // Page number
         let footer = query(selector(<__footer__>).after(el.location()), el.location())
@@ -237,7 +243,7 @@
   })
 }
 
-#let listoffigures(title: "插图", kind: image) = {
+#let listoffigures(title: "图目录", kind: image) = {
   heading(title, numbering: none, outlined: false)
   locate(it => {
     let elements = query(figure.where(kind: kind).after(it), it)
@@ -353,27 +359,44 @@
   )
 }
 
+#let strspacing(s,sz,fontsz) = {
+  let chars = s.split("")
+  chars = chars.slice(1,chars.len()-1)
+  chars.join(h(fontsz))
+}
+
+#let strjustify(s,len,fontsz) = {
+  let chars = s.split("")
+  chars = chars.slice(1,chars.len()-1)
+  let n = len - chars.len()
+  let sz = n /(chars.len()-1)
+  chars.join(h(sz*fontsz))
+}
+
 #let conf(
   cauthor: "张三",
   eauthor: "San Zhang",
+  clcnumber: "O-1234567890",
   studentid: "23000xxxxx",
   cthesisname: "博士研究生学位论文",
-  cheader: "北京大学博士学位论文",
-  ctitle: "北京大学学位论文Typst模板",
-  etitle: "Typst Template for Peking University Dissertations",
-  school: "某个学院",
+  cheader: "北京航空航天大学博士学位论文",
+  ctitle: "北京航空航天大学学位论文Typst模板",
+  etitle: "Typst Template for Beihang University Dissertations",
+  cschool: "某个学院",
+  eschool: "Some School",
   cmajor: "某个专业",
   emajor: "Some Major",
   direction: "某个研究方向",
   csupervisor: "李四",
   esupervisor: "Si Li",
+  supervisortitle: "教授",
   date: "二零二三年六月",
-  cabstract: [],
-  ckeywords: (),
-  eabstract: [],
-  ekeywords: (),
+  cabstract: "这是中文摘要",
+  ckeywords: ("关键词1", "关键词2"),
+  eabstract: "This is English abstract",
+  ekeywords: ("keyword1", "keyword2"),
   acknowledgements: [],
-  linespacing: 1em,
+  linespacing: 1.5em,
   outlinedepth: 3,
   blind: false,
   listofimage: true,
@@ -383,44 +406,57 @@
   doc,
 ) = {
   set page("a4",
+    // margin:
     header: locate(loc => {
       [
-        #set text(字号.五号)
+        #set text(字号.小五)
         #set align(center)
-        #if partcounter.at(loc).at(0) < 10 {
+        
+        // #if partcounter.at(loc).at(0) < 10 {
           // Handle the first page of Chinese abstract specailly
-          let headings = query(selector(heading).after(loc), loc)
-          let next_heading = if headings == () {
-            ()
-          } else {
-            headings.first().body.text
+          // let headings = query(selector(heading).after(loc), loc)
+          // let next_heading = if headings == () {
+          //   ()
+          // } else {
+          //   headings.first().body.text
+          // }
+          // if next_heading == "摘要" and calc.odd(loc.page()) {
+          //   [
+          //     摘要
+          //     #v(-0.7em)
+          //     #line(length: 100%,stroke: 0.5pt)
+          //   ]
+          // }
+        // } else if partcounter.at(loc).at(0) > 20 {
+        // } else {
+        #let flag = false
+        #if partcounter.at(loc).at(0) == 10 {
+          let footers = query(selector(<__footer__>).after(loc), loc)
+          let elems = if footers != () { 
+            query(heading.where(level: 1).before(footers.first().location()), footers.first().location())
           }
-          if next_heading == "摘要" and calc.odd(loc.page()) {
-            [
-              摘要
-              #v(-1em)
-              #line(length: 100%)
-            ]
+          if elems != none {
+            flag = elems.last().numbering==chinesenumbering
           }
-        } else if partcounter.at(loc).at(0) > 20 {
-        } else {
+        }
+        #if partcounter.at(loc).at(0) == 20{
+          flag = true
+        }
+        #if flag{
           if calc.even(loc.page()) {
             [
               #align(center, cheader)
               #v(-1em)
-              #line(length: 100%)
+              #line(length: 100%,stroke: 0.5pt)
             ]
           } else {
             let footers = query(selector(<__footer__>).after(loc), loc)
-            let elems = if footers == () {
-              ()
-            } else {
+            let elems = if footers != () {
               query(
                 heading.where(level: 1).before(footers.first().location()), footers.first().location()
               )
             }
-            if elems == () {
-            } else {
+            if elems != none {
               let el = elems.last()
               [
                 #let numbering = if el.numbering == chinesenumbering {
@@ -432,9 +468,15 @@
                   numbering
                   h(0.5em)
                 }
-                #el.body
+                // 适配分散对齐标题
+                #if not el.body.has("text"){
+                  el.body.children.filter(x => not x.has("amount")).join()
+                }else{
+                  el.body
+                }
+                
                 #v(-1em)
-                #line(length: 100%)
+                #line(length: 100%,stroke: 0.5pt)
               ]
             }
           }
@@ -442,8 +484,9 @@
     footer: locate(loc => {
       [
         #set text(字号.五号)
-        #set align(center)
-        #if query(selector(heading).before(loc), loc).len() < 2 or query(selector(heading).after(loc), loc).len() == 0 {
+        #set align(center)   
+        // 北航从摘要页开始
+        #if query(selector(heading).before(loc), loc).len() < 5 or query(selector(heading).after(loc), loc).len() == 0 {
           // Skip cover, copyright and origin pages
         } else {
           let headers = query(selector(heading).before(loc), loc)
@@ -497,21 +540,29 @@
 
     #let sizedheading(it, size) = [
       #set text(size)
-      #v(2em)
+      #v(0.5*size)
       #if it.numbering != none {
         textbf(counter(heading).display())
         h(0.5em)
       }
       #textbf(it.body)
-      #v(1em)
+      #v(0.5*size)
     ]
 
     #if it.level == 1 {
-      if not it.body.text in ("Abstract", "学位论文使用授权说明")  {
-        pagebreak(weak: true)
+      // pagebreak(weak: true)
+      if it.body.has("text") and not it.body.text in ("Abstract")  {
+          pagebreak(weak: true)
       }
       locate(loc => {
-        if it.body.text == "摘要" {
+        // 适配分散对齐标题
+        let content = ""
+        if it.body.has("children"){
+          content = it.body.children.at(0).text+it.body.children.at(2).text
+        }else if it.body.has("text"){
+          content = it.body.text
+        }
+        if content == "摘要"{
           partcounter.update(10)
           counter(page).update(1)
         } else if it.numbering != none and partcounter.at(loc).first() < 20 {
@@ -654,82 +705,194 @@
     })
   }
 
-  box(
-    grid(
-      columns: (auto, auto),
-      gutter: 0.4em,
-      image("pkulogo.svg", height: 2.4em, fit: "contain"),
-      image("pkuword.svg", height: 1.6em, fit: "contain")
-    )
-  )
-  linebreak()
-  textbf(cthesisname)
-
-  set text(字号.二号)
-  v(60pt)
+// 首页
+  heading(numbering: none, outlined: false, "")
+  v(-80pt)
+  set text(字号.五号,font: 字体.黑体)
+  set align(left)
   grid(
-    columns: (80pt, 300pt),
-    [
-      #set align(right + top)
-      题目：
-    ],
-    [
-      #set align(center + horizon)
-      #chineseunderline(ctitle, width: 300pt, bold: true)
-    ]
+    columns: (6*字号.五号,auto),
+    row-gutter: 1.5em,
+    textbf("中图分类号："),
+    textbf(clcnumber),
+    textbf(strjustify("论文编号",5,字号.五号)+"："),
+    textbf("10006"+studentid)
+  )
+  v(100pt)
+  set align(center)
+  grid(
+      columns: (auto),
+      gutter: 1.5em,
+      image("logo-buaa.svg", width: 70%, fit: "contain"),
+      image("head-doctor.png", width: 90%, fit: "contain")
   )
 
+  v(20pt)
+  set text(字号.小初,font:字体.宋体)
+  set align(center + horizon)
+
+  ctitle
+
   v(60pt)
-  set text(字号.三号)
+  set text(字号.小三)
 
   let fieldname(name) = [
-    #set align(right + top)
-    #textbf(name)
+    #set align(right + horizon)
+    #textbf(strjustify(name,5,字号.小三))
   ]
 
   let fieldvalue(value) = [
-    #set align(center + horizon)
-    #set text(font: 字体.仿宋)
-    #grid(
-      rows: (auto, auto),
-      row-gutter: 0.2em,
-      value,
-      line(length: 100%)
-    )
+    #set align(left + horizon)
+    #textbf(value)
   ]
 
   grid(
-    columns: (80pt, 280pt),
-    row-gutter: 1em,
-    fieldname(text("姓") + h(2em) + text("名：")),
+    columns: (100pt, 180pt),
+    row-gutter: 1.5em,
+    column-gutter: 1.5em,
+    fieldname("作者姓名"),
     fieldvalue(cauthor),
-    fieldname(text("学") + h(2em) + text("号：")),
-    fieldvalue(studentid),
-    fieldname(text("学") + h(2em) + text("院：")),
-    fieldvalue(school),
-    fieldname(text("专") + h(2em) + text("业：")),
+    fieldname("学科专业"),
     fieldvalue(cmajor),
-    fieldname("研究方向："),
-    fieldvalue(direction),
-    fieldname(text("导") + h(2em) + text("师：")),
-    fieldvalue(csupervisor),
+    fieldname("指导教师"),
+    fieldvalue(csupervisor+h(1em)+"教"+h(0.3em)+"授"),
+    fieldname("培养院系"),
+    fieldvalue(cschool),
   )
+  pagebreak()
 
-  v(60pt)
+// 空白页
+  if alwaysstartodd {
+    pagebreak()
+  }
+
+
+// 英文首页
+  set align(center + top)
   set text(字号.小二)
-  text(date)
-
+  heading(numbering: none, outlined: false, "")
+  v(100pt)
+  textbf(etitle)
+  v(50pt)
+  set text(字号.四号)
+  "A Dissertation Submitted for the Degree of Doctor of Philosophy"
+  v(100pt)
+  set text(字号.小三)
+  grid(
+    columns:(70pt,auto),
+    row-gutter: 1.5em,
+    column-gutter: 1em,
+    textbf("Candidate :"), fieldvalue(eauthor),
+    textbf("Supervisor:"), fieldvalue("Prof. "+esupervisor)
+  )
+  v(130pt)
+  eschool
+  linebreak()
+  v(0.5em)
+  "Beihang University, Beijing, China"
+  pagebreak()
+  
+// 空白页
   locate(loc => {
     if alwaysstartodd {
       pagebreak()
     }
   })
 
-  set align(left + top)
-  set text(字号.小四)
-  heading(numbering: none, outlined: false, "版权声明")
+// 中文首页
+  heading(numbering: none, outlined: false, "")
+  set text(字号.五号,font: 字体.黑体)
+  set align(left)
+  v(-20pt)
+  grid(
+    columns: (6*字号.五号,auto),
+    row-gutter: 1.5em,
+    textbf("中图分类号："),
+    textbf(clcnumber),
+    textbf(strjustify("论文编号",5,字号.五号)+"："),
+    textbf("10006"+studentid)
+  )
+  v(130pt)
+  set align(center)
+  set text(字号.小二)
+  strjustify(cthesisname,11,字号.小二)
+  v(50pt)
+  set text(字号.小一)
+  ctitle
+  v(110pt)
+  
+  let gridval(value) = [
+    #set align(left + horizon)
+    #value
+  ]
+  
+  set text(字号.小四,font: 字体.宋体)
+  grid(
+    columns:(1fr,1.5fr,1fr,1.5fr),
+    row-gutter: 2em,
+    gridval("作者姓名"),gridval(cauthor),
+    gridval("申请学位级别"), gridval("全日制工学博士"),
+    gridval("指导教师姓名"),gridval(csupervisor),
+    gridval(strjustify("职称",4,字号.小四)),gridval(supervisortitle),
+    gridval("学科专业"),gridval(cmajor),
+    gridval("研究方向"),gridval(direction),
+    gridval("学习时间自"),gridval("      年      月      日"),
+    gridval(h(2*字号.小四)+"起至"),gridval("      年      月      日止"),
+    gridval("论文提交日期"),gridval("      年      月      日"),
+    gridval("论文答辩日期"),gridval("      年      月      日"),
+    gridval("学位授予单位"),gridval("北京航空航天大学"),
+    gridval("学位授予日期"),gridval("      年      月      日"),
+  )
+  
+// 空白页
+  locate(loc => {
+    if alwaysstartodd {
+      pagebreak()
+    }
+  })
+  
+  set align(center)
+  heading(numbering: none, outlined: false, "关于学位论文的独创性声明")
+  set align(start)
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
-    任何收存和保管本论文各种版本的单位和个人，未经本论文作者同意，不得将本论文转借他人，亦不得随意复制、抄录、拍照或以任何方式传播。否则，引起有碍作者著作权之问题，将可能承担法律责任。
+    本人郑重声明：所呈交的论文是本人在指导教师指导下独立进行研究工作所取得的
+    成果，论文中有关资料和数据是实事求是的。尽我所知，除文中已经加以标注和致谢外，
+    本论文不包含其他人已经发表或撰写的研究成果，也不包含本人或他人为获得北京航空
+    航天大学或其它教育机构的学位或学历证书而使用过的材料。与我一同工作的同志对研
+    究所做的任何贡献均已在论文中作出了明确的说明。
+
+    若有不实之处，本人愿意承担相关法律责任。 
+
+    \
+    #set text(字号.五号)
+    #h(2em)学位论文作者签名：#h(15em) #"日期：,年,月,日".split(",").join(h(2em))
+    #v(-1.5em)
+    #line(start:(25%,0%),stroke:0.5pt,length:25%)
+  ]
+  v(50pt)
+  set align(center)
+  set text(字号.三号,font: 字体.黑体)
+  "学位论文使用授权"
+  v(0.5em)
+  set align(start)
+  set text(字号.小四,font: 字体.宋体)
+  par(justify: true, first-line-indent: 2em, leading: linespacing)[
+    本人完全同意北京航空航天大学有权使用本学位论文（包括但不限于其印刷版和电
+    子版），使用方式包括但不限于：保留学位论文，按规定向国家有关部门（机构）送交学
+    位论文，以学术交流为目的赠送和交换学位论文，允许学位论文被查阅、借阅和复印，
+    将学位论文的全部或部分内容编入有关数据库进行检索，采用影印、缩印或其他复制手
+    段保存学位论文。
+
+    保密学位论文在解密后的使用授权同上。 
+
+    \
+    #set text(字号.五号)
+    #h(2em)学位论文作者签名：#h(15em) #"日期：,年,月,日".split(",").join(h(2em))
+    #v(-1.5em)
+    #line(start:(25%,0%),stroke:0.5pt,length:25%)
+    #h(2em)指导教师签名：#h(2*字号.五号)#h(15em) #"日期：,年,月,日".split(",").join(h(2em))
+    #v(-1.5em)
+    #line(start:(20%,0%),stroke:0.5pt,length:30%)
   ]
 
   locate(loc => {
@@ -738,43 +901,38 @@
     }
   })
 
+  pagebreak()
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
-    #heading(numbering: none, outlined: false, "摘要")
-    #cabstract
-    #v(1fr)
-    #set par(first-line-indent: 0em)
+    #heading(strjustify("摘要",3,字号.三号),numbering: none, outlined: false)
+    #let paras = cabstract.split("\r\n")  // 支持多行摘要，TODO：改为content
+    #for p in paras {
+      p
+      v(0em)
+    }
+
     *关键词：*
     #ckeywords.join("，")
     #v(2em)
   ]
-  pagebreak()
-
-  locate(loc => {
-    if alwaysstartodd and calc.even(loc.page()) {
+ locate(loc => {
+    if alwaysstartodd {
       pagebreak()
     }
-
-    par(justify: true, first-line-indent: 2em, leading: linespacing)[
-      #[
-        #set text(字号.小二)
-        #set align(center)
-        #textbf(etitle)
-      ]
-      #[
-        #set align(center)
-        #eauthor \(#emajor\) \
-        Directed by #esupervisor
-      ]
+  })
+  par(justify: true, first-line-indent: 2em, leading: linespacing)[
       #heading(numbering: none, outlined: false, "Abstract")
-      #eabstract
-      #v(1fr)
-      #set par(first-line-indent: 0em)
-      *KEYWORDS:*
+      #let paras = eabstract.split("\r\n")
+      #for p in paras {
+        p
+        v(0em)
+      }
+
+      *Key words:*
       #h(0.5em, weak: true)
       #ekeywords.join(", ")
       #v(2em)
     ]
-  })
+  
   pagebreak()
 
   locate(loc => {
@@ -783,18 +941,18 @@
     }
 
     chineseoutline(
-      title: "目录",
+      title: strjustify("目录",3,字号.三号),
       depth: outlinedepth,
       indent: true,
     )
   })
 
   if listofimage {
-    listoffigures()
+    listoffigures(title: "图清单")
   }
 
   if listoftable {
-    listoffigures(title: "表格", kind: table)
+    listoffigures(title: "表清单", kind: table)
   }
 
   if listofcode {
@@ -806,65 +964,4 @@
     #doc
   ]
 
-  if not blind {
-    par(justify: true, first-line-indent: 2em, leading: linespacing)[
-      #heading(numbering: none, "致谢")
-      #acknowledgements
-    ]
-
-    partcounter.update(30)
-    heading(numbering: none, "北京大学学位论文原创性声明和使用授权说明")
-    align(center)[#heading(level: 2, numbering: none, outlined: false, "原创性声明")]
-    par(justify: true, first-line-indent: 2em, leading: linespacing)[
-      本人郑重声明：
-      所呈交的学位论文，是本人在导师的指导下，独立进行研究工作所取得的成果。
-      除文中已经注明引用的内容外，
-      本论文不含任何其他个人或集体已经发表或撰写过的作品或成果。
-      对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。
-      本声明的法律结果由本人承担。
-
-      #v(1em)
-
-      #align(right)[
-        论文作者签名
-        #h(5em)
-        日期：
-        #h(2em)
-        年
-        #h(2em)
-        月
-        #h(2em)
-        日
-      ]
-
-      #align(center)[#heading(level: 2, numbering: none, outlined: false, "学位论文使用授权说明")]
-      #v(-0.33em, weak: true)
-      #align(center)[#text(字号.五号)[（必须装订在提交学校图书馆的印刷本）]]
-      #v(字号.小三)
-
-      本人完全了解北京大学关于收集、保存、使用学位论文的规定，即：
-
-      - 按照学校要求提交学位论文的印刷本和电子版本；
-      - 学校有权保存学位论文的印刷本和电子版，并提供目录检索与阅览服务，在校园网上提供服务；
-      - 学校可以采用影印、缩印、数字化或其它复制手段保存论文；
-      - 因某种特殊原因须要延迟发布学位论文电子版，授权学校 #box[#rect(width: 9pt, height: 9pt)] 一年 /	 #box[#rect(width: 9pt, height: 9pt)] 两年 / #box[#rect(width: 9pt, height: 9pt)] 三年以后，在校园网上全文发布。
-
-      #align(center)[（保密论文在解密后遵守此规定）]
-
-      #v(1em)
-      #align(right)[
-        论文作者签名
-        #h(5em)
-        导师签名
-        #h(5em)
-        日期：
-        #h(2em)
-        年
-        #h(2em)
-        月
-        #h(2em)
-        日
-      ]
-    ]
-  }
 }

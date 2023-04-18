@@ -3,29 +3,32 @@
 #show: doc => conf(
   cauthor: "张三",
   eauthor: "San Zhang",
+  clcnumber: "O-1234567890",
   studentid: "23000xxxxx",
   cthesisname: "博士研究生学位论文",
-  cheader: "北京大学博士学位论文",
-  ctitle: "北京大学学位论文 Typst 模板",
-  etitle: "Typst Template for Peking University Dissertations",
-  school: "某个学院",
+  cheader: "北京航空航天大学博士学位论文",
+  ctitle: "北京航空航天大学学位论文Typst模板",
+  etitle: "Typst Template for Beihang University Dissertations",
+  cschool: "某个学院",
+  eschool: "Some School",
   cmajor: "某个专业",
   emajor: "Some Major",
   direction: "某个研究方向",
   csupervisor: "李四",
   esupervisor: "Si Li",
+  supervisortitle: "教授",
   date: "二零二三年六月",
-  cabstract: lorem(300),
-  ckeywords: ("Typst", "模板"),
-  eabstract: lorem(300),
-  ekeywords: ("Typst", "Template"),
-  acknowledgements: [感谢 Typst 开发者的辛勤付出。 #lorem(300)],
-  linespacing: 1em,
+  cabstract: "摘要\r\n"+lorem(100),
+  ckeywords: ("关键词1","关键词2","关键词3"),
+  eabstract: "Abstract\r\n"+lorem(100),
+  ekeywords: ("key1","key2","key3"),
+  acknowledgements: [],
+  linespacing: 1.5em,
   outlinedepth: 3,
   blind: false,
   listofimage: true,
   listoftable: true,
-  listofcode: true,
+  listofcode: false,
   alwaysstartodd: true,
   doc,
 )
@@ -538,7 +541,41 @@ $ vec(overline(underbracket(underline(1 + 2) + overbrace(3 + dots.c + 10, "large
 
 #include "changelog.typ"
 
+
+#pagebreak()
+#heading(strjustify("结论",4,字号.三号), numbering: none, outlined: true)
+学位论文的结论单独作为一章，但不加章号。如果不可能导出应有的结论，也可
+以没有结论而进行必要的讨论。
+
+
 #pagebreak()
 #bibliography("ref.bib",
   style: "ieee"
 )
+
+#heading("攻读博士学位期间取得的研究成果",numbering: none, outlined: true)
+对于博士学位论文，本条目名称用“攻读博士学位期间取得的研究成果”，一般包括：
+
+攻读博士学位期间取得的学术成果：攻读博士学位期间取得的学术成果：列出攻读博士期间发表（含录用）的与学位论文相关的学位论文、发表专利、著作、获奖项目等，书写格式与参考文献格式相同；
+
+攻读博士期间参与的主要科研项目：列出攻读博士学位期间参与的与学位论文相关的主要科研项目，包括项目名称，项目来源，研制时间，本人承担的主要工作。
+
+对于硕士学位论文，本条目名称用“攻读硕士学位期间取得的学术成果”，只列出攻读硕士学位期间发表（含录用）的与学位论文相关的学位论文、发表专利、著作、获奖项目等，书写格式与参考文献格式相同。
+
+* 研究生不列科研项目 *
+
+#pagebreak()
+#heading(strjustify("致谢",4,字号.三号), numbering: none, outlined: true)
+致谢中主要感谢指导教师和在学术方面对论文的完成有直接贡献及重要帮助的团体和人士，以及感谢给予转载和引用权的资料、图片、文献、研究思想和设想的所有者。致谢中还可以感谢提供研究经费及实验装置的基金会或企业等单位和人士。致谢辞应谦虚诚恳，实事求是，切记浮夸与庸俗之词。
+
+感谢 Typst 开发者的辛勤付出。
+
+* 感谢完所有人之后，也请记得感谢一下自己。*
+
+
+#heading("作者简介", numbering: none, outlined: true)
+姓名，性别，民族，x年x月出生于xx省xx市。
+
+x年x月考入北京航空航天大学xx学院xx专业，年月本科毕业并获得xx学士学位。
+
+x年x月进入北京航空航天大学xx学院攻读xx博士学位至今。
