@@ -1,8 +1,10 @@
-# PKUTHSS-Typst
+# BUAA-Typst
 
-Typst template for dissertations in Peking University (PKU).
+Typst template for dissertations in Beihang University (BUAA).
 
-![PKUTHSS-Typst](./images/cover.png)
+Forked from [PKUTHSS-Typst](https://github.com/lucifer1004/pkuthss-typst)
+
+![BUAA-Typst](./images/cover.png)
 
 The full PDF file is available [here](./build/thesis.pdf).
 
