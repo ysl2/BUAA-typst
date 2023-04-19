@@ -4,6 +4,11 @@
 #set enum(indent: 0em)
 #set list(indent: 0em)
 
+#heading(level: 2, numbering: none, "2023-04-20")
++ 参考sysu-thesis-typst拆分逻辑 (https://github.com/howardlau1999/sysu-thesis-typst)
++ 引入了pkuthuss-typst的修复 (https://github.com/lucifer1004/pkuthss-typst/issues/5)
++ 修复空白outline显示逻辑
+
 #heading(level: 2, numbering: none, "2023-04-18")
 + 参考北航博士论文模板，完成对北航格式的适配
 + 增加了对字符串分散对齐(strjustify)的功能与相应格式适配
