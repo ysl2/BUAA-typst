@@ -4,9 +4,12 @@
 #set enum(indent: 0em)
 #set list(indent: 0em)
 
+#heading(level:2, numbering: none, "2023-05-09")
++ 添加了GB/T7714的支持，同时可以使用其他自定义的CSL文件
+
 #heading(level: 2, numbering: none, "2023-04-20")
 + 参考sysu-thesis-typst拆分逻辑 (https://github.com/howardlau1999/sysu-thesis-typst)
-+ 引入了pkuthuss-typst的修复 (https://github.com/lucifer1004/pkuthss-typst/issues/5)
++ 引入了pkuthuss-typst的修复 (https://github.com/lucifer1004/pkuthss-typst/commit/aec9080931f8efe625c41d28a8b20814c3e69969)
 + 修复空白outline显示逻辑
 
 #heading(level: 2, numbering: none, "2023-04-18")

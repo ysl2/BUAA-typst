@@ -2,7 +2,7 @@
 #let blind = false
 #let listofimage = true
 #let listoftable = true
-#let listofcode = true
+#let listofcode = false
 #let alwaysstartodd = true
 
 #let linespacing = 1.5em

@@ -15,32 +15,32 @@
 #let chinesenumber(num, standalone: false) = if num < 11 {
   ("零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十").at(num)
 } else if num < 100 {
-  if calc.mod(num, 10) == 0 {
+  if calc.rem(num, 10) == 0 {
     chinesenumber(calc.floor(num / 10)) + "十"
   } else if num < 20 and standalone {
-    "十" + chinesenumber(calc.mod(num, 10))
+    "十" + chinesenumber(calc.rem(num, 10))
   } else {
-    chinesenumber(calc.floor(num / 10)) + "十" + chinesenumber(calc.mod(num, 10))
+    chinesenumber(calc.floor(num / 10)) + "十" + chinesenumber(calc.rem(num, 10))
   }
 } else if num < 1000 {
   let left = chinesenumber(calc.floor(num / 100)) + "百"
-  if calc.mod(num, 100) == 0 {
+  if calc.rem(num, 100) == 0 {
     left
-  } else if calc.mod(num, 100) < 10 {
-    left + "零" + chinesenumber(calc.mod(num, 100))
+  } else if calc.rem(num, 100) < 10 {
+    left + "零" + chinesenumber(calc.rem(num, 100))
   } else {
-    left + chinesenumber(calc.mod(num, 100))
+    left + chinesenumber(calc.rem(num, 100))
   }
 } else {
   let left = chinesenumber(calc.floor(num / 1000)) + "千"
-  if calc.mod(num, 1000) == 0 {
+  if calc.rem(num, 1000) == 0 {
     left
-  } else if calc.mod(num, 1000) < 10 {
-    left + "零" + chinesenumber(calc.mod(num, 1000))
-  } else if calc.mod(num, 1000) < 100 {
-    left + "零" + chinesenumber(calc.mod(num, 1000))
+  } else if calc.rem(num, 1000) < 10 {
+    left + "零" + chinesenumber(calc.rem(num, 1000))
+  } else if calc.rem(num, 1000) < 100 {
+    left + "零" + chinesenumber(calc.rem(num, 1000))
   } else {
-    left + chinesenumber(calc.mod(num, 1000))
+    left + chinesenumber(calc.rem(num, 1000))
   }
 }
 

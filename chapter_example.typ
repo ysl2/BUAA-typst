@@ -509,6 +509,15 @@ $ vec(overline(underbracket(underline(1 + 2) + overbrace(3 + dots.c + 10, "large
 #include "changelog.typ"
 
 #pagebreak()
-#bibliography("ref.bib",
-  style: "ieee"
-)
+#[
+  #set text(size: 0pt)
+  #bibliography("ref.bib")
+]
+
+#v(1em)
+#[
+  #set enum(indent: 0em, numbering: "[1]")
+  #par(first-line-indent: 0em,leading: 0.8em)[
+    #include "ref.typ"
+  ]
+]
