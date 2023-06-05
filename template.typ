@@ -25,7 +25,7 @@
           let elems = if footers != () { 
             query(heading.where(level: 1).before(footers.first().location()), footers.first().location())
           }
-          if elems != none {
+          if elems != () {
             flag = elems.last().numbering==chinesenumbering
           }
         }
@@ -46,7 +46,7 @@
                 heading.where(level: 1).before(footers.first().location()), footers.first().location()
               )
             }
-            if elems != none {
+            if elems != () {
               let el = elems.last()
               [
                 #let numbering = if el.numbering == chinesenumbering {

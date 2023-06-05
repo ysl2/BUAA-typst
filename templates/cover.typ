@@ -21,8 +21,8 @@
 #grid(
     columns: (auto),
     gutter: 1.5em,
-    image("../logo-buaa.svg", width: 70%, fit: "contain"),
-    image("../head-doctor.png", width: 90%, fit: "contain")
+    image("../images/logo-buaa.svg", width: 70%, fit: "contain"),
+    image("../images/head-doctor.png", width: 90%, fit: "contain")
 )
 
 #v(20pt)
