@@ -4,6 +4,10 @@
 #set enum(indent: 0em)
 #set list(indent: 0em)
 
+#heading(level:2, numbering: none, "2023-11-20")
++ 适配v0.9，修复了一些breaking change: calc.mod->calc.rem (v0.3), caption(v0.8)
++ 由于v0.9引入了CSL，所以现在可以不使用上一版的迂回策略了
+
 #heading(level:2, numbering: none, "2023-05-09")
 + 添加了GB/T7714的支持，同时可以使用其他自定义的CSL文件
 

@@ -46,7 +46,7 @@
                 heading.where(level: 1).before(footers.first().location()), footers.first().location()
               )
             }
-            if elems != () {
+            if elems != none {
               let el = elems.last()
               [
                 #let numbering = if el.numbering == chinesenumbering {
@@ -194,7 +194,7 @@
           chinesenumbering(chaptercounter.at(loc).first(), imagecounter.at(loc).first(), location: loc)
         })
         #h(1em)
-        #it.caption
+        #it.caption.body
       ]
     } else if it.kind == table {
       [
@@ -204,7 +204,7 @@
           chinesenumbering(chaptercounter.at(loc).first(), tablecounter.at(loc).first(), location: loc)
         })
         #h(1em)
-        #it.caption
+        #it.caption.body
       ]
       it.body
     } else if it.kind == "code" {
@@ -215,7 +215,7 @@
           chinesenumbering(chaptercounter.at(loc).first(), rawcounter.at(loc).first(), location: loc)
         })
         #h(1em)
-        #it.caption
+        #it.caption.body
       ]
       it.body
     }
