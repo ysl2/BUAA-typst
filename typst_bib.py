@@ -7,7 +7,7 @@ def filter_str(sentence):
     sentence = re.sub(remove_nota, '', sentence)
     sentence = sentence.translate(remove_punctuation_map)
     return sentence.strip()
-    
+
 def judge_lang(s):
     s = filter_str(s)
     result = []
@@ -39,9 +39,9 @@ output = bibfile.split('.')[0]+'.html'
 if not os.path.exists(typreffile):
     with open(typreffile,'w',encoding='utf-8') as f:
         pass
-    
-cmd_typst = r".\typst compile " + typfile
-res = subprocess.run(cmd_typst,stdout=subprocess.PIPE,encoding='utf-8').stdout
+
+cmd_typst = r"./typst compile " + typfile
+res = subprocess.run(cmd_typst,stdout=subprocess.PIPE,encoding='utf-8', shell=True).stdout
 
 # write file to md
 with open(mdfile,'w') as f:
@@ -49,12 +49,12 @@ with open(mdfile,'w') as f:
 
 # Step 2: use pandoc to gen reference
 if tofile:
-    cmd_tofile = "pandoc.exe --citeproc " + mdfile + " --bibliography " + bibfile + " --csl " + cslfile + " --metadata title=\"" + title + "\" --metadata link-citations=" + link_citations + " -s -o " + output
+    cmd_tofile = "pandoc --citeproc " + mdfile + " --bibliography " + bibfile + " --csl " + cslfile + " --metadata title=\"" + title + "\" --metadata link-citations=" + link_citations + " -s -o " + output
     os.system(cmd_tofile)
 
-cmd_pandoc = f"pandoc.exe --citeproc {mdfile} --bibliography {bibfile} --csl {cslfile}"
+cmd_pandoc = f"pandoc --citeproc {mdfile} --bibliography {bibfile} --csl {cslfile}"
 
-res = subprocess.run(cmd_pandoc,stdout=subprocess.PIPE,encoding='utf-8').stdout
+res = subprocess.run(cmd_pandoc,stdout=subprocess.PIPE,encoding='utf-8', shell=True).stdout
 soup = bs4.BeautifulSoup(res,features="html.parser")
 refs = soup.find_all('div','csl-right-inline')
 reflist = []
@@ -74,4 +74,4 @@ with open(typreffile,'w',encoding='utf-8') as f:
         f.write(f'+ {ref}\n\n')
 
 # compile typst file again
-subprocess.run(cmd_typst,stdout=subprocess.PIPE,encoding='utf-8')
+subprocess.run(cmd_typst,stdout=subprocess.PIPE,encoding='utf-8', shell=True)
